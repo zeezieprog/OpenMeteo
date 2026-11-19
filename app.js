@@ -1,5 +1,5 @@
 import {localReadings} from './readings.js';
-import {rainMap} from './rainmap.js';
+import {rainMap} from './rainmap.js?v=729e7e2';
 import {weather,forecastCards} from './outlook.js';
 const $=id=>document.getElementById(id);
 async function read(url) {
