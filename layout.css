@@ -1,0 +1,23 @@
+:root{--ink:#102c3c;--sea:#11736c;--muted:#486270;--line:#d9e5e6}
+body{color:var(--ink);background:linear-gradient(160deg,#edf5f4,#f6f8fa 40%,#edf3f5);font-family:Inter,"Segoe UI",Arial,sans-serif}
+header{border-color:var(--line)}.logo{display:grid;place-items:center;background:#12675f}.logo svg{width:29px;height:29px}
+nav a{display:flex;align-items:center;gap:6px;min-height:44px}nav svg{width:17px;height:17px}
+.hero{box-shadow:0 10px 35px #20394912}.hero>div{padding:34px 38px}.hero-actions{display:flex;align-items:flex-end;flex-wrap:wrap;gap:16px;margin-top:15px}
+.herolabel{display:grid;gap:4px;margin:0;font-weight:600}.herolabel select{min-height:44px;padding-inline:12px;border-radius:10px}.hero-actions a{display:grid;align-items:center;min-height:44px;color:#d4f4ef;text-underline-offset:4px;font-size:14px}
+article,.metric{border-radius:17px;box-shadow:0 3px 15px #23434d07}article{min-width:0}.columns{align-items:start;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}
+.reading{background:linear-gradient(110deg,#dff3ec,#f2faf7);border:1px solid #cde6dc;border-radius:12px}.reading-list{margin:14px 0}
+.reading-row{padding:13px 0;border-bottom:1px solid var(--line)}.reading-line{display:flex;align-items:baseline;gap:10px;justify-content:space-between}
+.reading-line span{font-size:15px;font-weight:650}.reading-line strong{color:var(--sea);font-size:21px;white-space:nowrap;letter-spacing:-.6px}
+.reading-row p{font-size:15px;line-height:1.5;color:var(--muted);margin:5px 0}.reading-row details{font-size:14px;color:var(--sea)}summary{cursor:pointer}.reading-row summary{padding:5px 0;width:fit-content}
+.period{border-radius:13px}.period:first-child{border-top:3px solid #248c80}.tools button,.switch button,#place{min-height:44px}.tools button{min-width:44px}.tools{font-variant-numeric:tabular-nums}
+@media(max-width:800px){.columns{grid-template-columns:minmax(0,1fr)}.wrap{padding-inline:clamp(12px,4vw,26px)}}
+@media(max-width:640px){
+ body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}.nav{height:60px;display:flex;align-items:center;justify-content:space-between;flex-direction:row;padding-block:0}.city{display:inline;font-size:12px;padding:5px 8px}.brand{font-size:18px}.logo{width:32px;height:32px}
+ nav{position:fixed;inset:auto 0 0;z-index:10;display:grid;grid-template-columns:repeat(4,1fr);gap:0;padding:4px 6px calc(4px + env(safe-area-inset-bottom));background:#fffffff5;border-top:1px solid var(--line);box-shadow:0 -4px 18px #173a4810}nav a{display:flex;flex-direction:column;justify-content:center;gap:2px;font-size:12px;min-height:50px;border-radius:10px}nav svg{width:20px;height:20px}nav a[aria-current]{color:#09675e;background:#e8f4f1}
+ .hero{margin:15px 0 20px;border-radius:18px;background-position:65% center}.hero>div{padding:24px 19px;background:linear-gradient(95deg,#102035f2,#112338d9 45%,#12263d33)}.hero h1{font-size:clamp(32px,8.2vw,46px);letter-spacing:-1.7px}.hero-actions{gap:12px}.hero-actions a{font-size:14px}
+ .title{flex-wrap:wrap;align-items:center}.tools{max-width:100%;font-size:12px}.stats{gap:9px}.metric{padding:12px 13px}.metric .icon{float:right;padding:4px}.icon svg{width:16px;height:16px}.metric label{font-size:13px;padding-right:22px}.metric strong{font-size:25px}.metric p{font-size:13px}.freshness{font-size:13px;line-height:1.5}
+ .panelhead,.pad{padding:17px}.panelhead h2,.pad h2{font-size:22px}#detail{padding:0 17px 16px}.reading-row p{font-size:15px}
+ .map{margin:0 8px}.pin{width:19px;height:19px}.pin:before{content:'';position:absolute;inset:-6px}.pin span{top:17px}.pin:nth-child(5) span{top:auto;bottom:16px}.pin:nth-child(8) span{left:100%;transform:none}
+ .period{flex-basis:128px}.switch button{padding:6px 10px}.compare table,.compare tbody{display:block;white-space:normal}.compare thead{position:absolute;clip-path:inset(50%);height:1px;width:1px;overflow:hidden}.compare tr{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:13px 0;border-bottom:1px solid var(--line)}.compare td{padding:0;border:0;font-size:14px}.compare td:first-child{grid-column:span 2;font-size:16px}.compare td:nth-child(2){text-align:right;color:var(--sea)}.compare td:nth-child(n+3):before{display:block;font-size:12px;color:var(--muted)}.compare td:nth-child(3):before{content:'Hujan / interval'}.compare td:nth-child(4):before{content:'Suhu'}.compare td:nth-child(5):before{content:'Total 7 hari'}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
