@@ -8,12 +8,21 @@ export function rainMap(places, choose) {
   const map = L.map(panel,{scrollWheelZoom:false,minZoom:9,maxZoom:18});
   const overview = () => map.fitBounds(coords,{padding:[44,44],maxZoom:13});
   overview();
-  const layer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
+  map.createPane('overviewBase').style.zIndex=180;
+  L.imageOverlay('bandung-map.webp',[[-6.9761835, 107.5369263], [-6.851782, 107.7326202]],{pane:'overviewBase',attribution:'© CARTO'}).addTo(map);
+  const layer=L.tileLayer('https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',{
     maxZoom:19,attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
   }).addTo(map);
-  const note = document.getElementById('mapnote');
-  layer.on('tileerror',()=>{note.dataset.failed='1';if(!note.textContent.includes('Peta jalan'))note.append(' Peta jalan tidak termuat sepenuhnya.');});
-  document.getElementById('fit').onclick=overview;
+  const note=document.getElementById('mapnote');
+  let captionText='';
+  const updateNote=()=>{
+    const tiles=panel.querySelectorAll('.leaflet-tile');
+    const incomplete=[...tiles].some(tile=>tile.complete&&!tile.naturalWidth);
+    note.textContent=captionText+(incomplete?' Sebagian detail jalan belum termuat.':'');
+  };
+  layer.on('load tileerror',updateNote);
+  document.getElementById('fit').onclick=()=>{map.closePopup();overview()};
+  if(window.ResizeObserver)new ResizeObserver(()=>map.invalidateSize({pan:false})).observe(panel);
   let request;
   const custom=L.popup();
   map.on('click',async event=>{
@@ -46,13 +55,17 @@ export function rainMap(places, choose) {
     finally{clearTimeout(timeout)}
   });
   const markers=coords.map((coord,i)=>L.marker(coord,{title:places[i][0],icon:L.divIcon({className:'rain-marker'})})
-    .on('click',()=>choose(i)).addTo(map));
+    .on('click',()=>{map.closePopup();choose(i)}).addTo(map));
   return (values,selected,caption,format) => {
-    note.textContent=caption+(note.dataset.failed?' Peta jalan tidak termuat sepenuhnya.':'');
+    captionText=caption;updateNote();
+    if(selected!==null&&!map.getBounds().contains(coords[selected]))map.panTo(coords[selected]);
     markers.forEach((marker,i)=>{
       const value=values[i], name=places[i][0];
+      const key=String(value)+'/'+(selected===i);
+      if(marker.options.renderKey===key)return;
+      marker.options.renderKey=key;
       marker.setIcon(L.divIcon({className:'rain-marker',iconSize:[50,30],iconAnchor:[25,15],
-        html:'<span class="'+(value>0?'rainy ':'')+(selected===i?'chosen':'')+'">'+format(value)+'</span>'}));
+        html:'<span class="'+(value==null?'unavailable ':value>0?'rainy ':'')+(selected===i?'chosen':'')+'">'+format(value)+'</span>'}));
       marker.getElement().setAttribute('aria-label',name+', '+format(value)+' milimeter');
       marker.unbindTooltip().bindTooltip(name,{direction:'top',offset:[0,-12],permanent:i===selected});
     });
