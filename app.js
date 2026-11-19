@@ -141,6 +141,20 @@ function render(){
    const weekLayer=$('layer').value==='week';
    const values=currents.map((v,i)=>weekLayer?weekly(i):v.precipitation);
    const dates=daily(0).slice(-7);
+   const list=$('mapplaces');
+   if(list){
+    if(!list.childElementCount){
+     names.forEach((name,i)=>{
+      const btn=document.createElement('button');
+      const label=document.createElement('span');label.textContent=name;
+      btn.append(label,document.createElement('b'));btn.onclick=()=>choose(i);list.append(btn);
+     });
+    }
+    [...list.children].forEach((btn,i)=>{
+     btn.setAttribute('aria-pressed',String(i===selected));
+     btn.lastElementChild.textContent=fmt(values[i])+' mm';
+    });
+   }
    updateMap(values,selected,weekLayer?(dates.length===7?'Akumulasi dalam mm · '+dates[0][0]+' sampai '+dates.at(-1)[0]:'Data tujuh hari belum lengkap.'):'Curah hujan dalam mm selama '+interval+' menit hingga '+stamp(clock.time),fmt);
  }
  if($('detail')&&c){
@@ -151,7 +165,7 @@ function render(){
  const expandedReadings=[...$('detail').querySelectorAll('details')].map(item=>item.open);
  $('detail').innerHTML='<div class="reading"><strong>'+condition+'</strong><span>'+description+' '+fmt(c.precipitation)+' mm dalam '+interval+' menit</span></div><div class="reading-list">'+localReadings(c,fmt)+'</div><p class="detailnote">Estimasi model untuk '+names[selected]+'. Satu milimeter hujan setara dengan satu liter air per meter persegi.</p>';
  $('detail').querySelectorAll('details').forEach((item,i)=>{item.open=Boolean(expandedReadings[i])});
- }else if($('detail')){$('detail').textContent='Pilih lokasi untuk melihat curah hujan, kelembapan, suhu, dan anginnya.'}
+ }else if($('detail')){$('detail').textContent=page==='peta'?'':'Pilih lokasi untuk melihat curah hujan, kelembapan, suhu, dan anginnya.'}
  if($('freshness'))$('freshness').textContent='Cek otomatis setiap menit'+(checkedAt?' · Terakhir diperiksa '+checkedAt+' WIB':'')+'. Estimasi model memiliki interval '+interval+' menit.';
  for(const link of document.querySelectorAll('nav a,.destinations a')){
   const url=new URL(link.href);

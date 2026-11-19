@@ -43,3 +43,22 @@ main>.tools{margin-top:-7px;margin-bottom:14px}.switch{max-width:100%}
 #rainmap .leaflet-control-zoom a{width:36px;height:36px;line-height:36px}.pad #mapnote{margin:10px 0;font-weight:600}.select-panel .locator label,.locator>label{color:#274c50;font-weight:650}
 footer{border-top:1px solid var(--line);padding-top:20px}.wrap>article,.wrap>section{min-width:0}
 @media(max-width:640px){.route-hero{margin-top:12px;background-position:64% center}.route-hero>div{padding:23px 19px;background:linear-gradient(95deg,#102239f5,#102239be 70%,#10223966)}.route-hero p{line-height:1.5}.title{gap:8px}.title .tools{flex-wrap:nowrap;max-width:100%;text-align:left}.tools span{min-width:0}.metric label{padding:0}.metric .icon{float:none;margin:0 0 4px}.metric label{display:block}.compare tbody tr{padding:12px 7px}.period{flex-basis:132px}.location-menu{padding:16px}#selectgrid{grid-template-columns:repeat(2,minmax(0,1fr))}#selectgrid button{font-size:14px}.strip-head{align-items:center}.strip-head>div{flex-shrink:0}#chart dl{font-size:14px}.charthead{flex-wrap:wrap}.brand{letter-spacing:-.7px}.route-hero h1{font-size:clamp(31px,8vw,45px)}}
+
+/* Map-first layout and an immediately visible, locally hosted street layer. */
+body[data-page="peta"] .route-hero>div{padding-block:24px}
+body[data-page="peta"] .route-hero h1{font-size:clamp(32px,3.5vw,48px);margin-bottom:6px}
+body[data-page="peta"] .route-hero{margin-bottom:12px}
+body[data-page="peta"] .weather-layout{grid-template-columns:minmax(0,1.8fr) minmax(260px,1fr)}
+body[data-page="peta"] .weather-layout>article:first-child>.locator{display:flex;align-items:center;gap:12px;max-width:none;margin:12px 0}
+body[data-page="peta"] #layer{width:auto;max-width:100%;margin:0}
+.map-stage{position:relative;isolation:isolate;background:#e6ece7;overflow:hidden;border-radius:12px}
+.street-preview{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
+.map-stage #rainmap{background:transparent;height:clamp(350px,54vh,610px)}
+.map-ready .street-preview{visibility:hidden}
+#mapplaces{display:grid;gap:0;margin-top:12px}
+#mapplaces button{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 8px;text-align:left;color:var(--ink);background:transparent;border:0;border-bottom:1px solid var(--line);min-height:44px;font-size:15px}
+#mapplaces b{color:#17665c;white-space:nowrap;font-variant-numeric:tabular-nums}
+#mapplaces button[aria-pressed=true],#mapplaces button:hover{background:#e7f4ef}
+.map-stage .leaflet-control-attribution{font-size:11px}
+@media(max-width:800px){body[data-page="peta"] .weather-layout{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:640px){body[data-page="peta"] .route-hero>div{padding:18px}body[data-page="peta"] .weather-layout>article:first-child>.locator{flex-wrap:wrap;gap:5px}body[data-page="peta"] #layer{flex:1;min-width:140px}.map-stage #rainmap{height:clamp(300px,49svh,450px)}body[data-page="peta"] .wrap>.tools{margin:4px 0 9px}}

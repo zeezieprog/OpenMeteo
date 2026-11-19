@@ -1,28 +1,33 @@
 export function rainMap(places, choose) {
   const panel = document.getElementById('rainmap');
-  if (!window.L) {
-    panel.textContent = 'Peta belum tersedia. Gunakan pilihan lokasi untuk membaca cuaca.';
-    return () => {};
-  }
-  const coords = places.map(p => [p[2],p[3]]);
-  const map = L.map(panel,{scrollWheelZoom:false,minZoom:9,maxZoom:18});
-  const overview = () => map.fitBounds(coords,{padding:[44,44],maxZoom:13});
-  overview();
-  map.createPane('overviewBase').style.zIndex=180;
-  L.imageOverlay('bandung-map.webp',[[-6.9761835, 107.5369263], [-6.851782, 107.7326202]],{pane:'overviewBase',attribution:'© CARTO'}).addTo(map);
-  const layer=L.tileLayer('https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',{
-    maxZoom:19,attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-  }).addTo(map);
   const note=document.getElementById('mapnote');
-  let captionText='';
-  const updateNote=()=>{
-    const tiles=panel.querySelectorAll('.leaflet-tile');
-    const incomplete=[...tiles].some(tile=>tile.complete&&!tile.naturalWidth);
-    note.textContent=captionText+(incomplete?' Sebagian detail jalan belum termuat.':'');
-  };
-  layer.on('load tileerror',updateNote);
-  document.getElementById('fit').onclick=()=>{map.closePopup();overview()};
-  if(window.ResizeObserver)new ResizeObserver(()=>map.invalidateSize({pan:false})).observe(panel);
+  const fit=document.getElementById('fit');
+  if(!window.L){
+    fit.hidden=true;
+    return (_values,_selected,caption)=>{note.textContent=caption+'. Gunakan pilihan lokasi untuk membaca data titik.'};
+  }
+  const coords=places.map(p=>[p[2],p[3]]);
+  const bounds=L.latLngBounds([[-7.01366792756663, 107.490234375], [-6.7955350257195155, 107.7978515625]]);
+  const map=L.map(panel,{scrollWheelZoom:false,minZoom:11,maxZoom:16,maxBounds:bounds,maxBoundsViscosity:1});
+  const overview=()=>map.fitBounds(coords,{padding:[35,35],maxZoom:14});
+  overview();
+  // Both the basemap and Leaflet ship with the site. No third-party tile requests.
+  const streets=L.imageOverlay('bandung-streets.webp',bounds,{
+    alt:'Jaringan jalan, sungai, dan ruang hijau Bandung',
+    attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · <a href="https://openfreemap.org/">OpenFreeMap</a>'
+  });
+  streets.on('load',()=>panel.parentElement.classList.add('map-ready'));
+  streets.on('error',()=>panel.parentElement.classList.remove('map-ready'));
+  streets.addTo(map);
+  fit.onclick=()=>{map.closePopup();overview()};
+  function sizeMap(){
+    map.invalidateSize({pan:false});
+    const min=map.getBoundsZoom(bounds,true);
+    map.setMinZoom(Math.min(map.getMaxZoom(),min));
+    map.panInsideBounds(bounds,{animate:false});
+  }
+  sizeMap();
+  if(window.ResizeObserver)new ResizeObserver(sizeMap).observe(panel);
   let request;
   const custom=L.popup();
   map.on('click',async event=>{
@@ -56,9 +61,11 @@ export function rainMap(places, choose) {
   });
   const markers=coords.map((coord,i)=>L.marker(coord,{title:places[i][0],icon:L.divIcon({className:'rain-marker'})})
     .on('click',()=>{map.closePopup();choose(i)}).addTo(map));
+  let previousSelection=null;
   return (values,selected,caption,format) => {
-    captionText=caption;updateNote();
-    if(selected!==null&&!map.getBounds().contains(coords[selected]))map.panTo(coords[selected]);
+    note.textContent=caption;
+    if(selected!==previousSelection&&selected!==null&&!map.getBounds().contains(coords[selected]))map.panTo(coords[selected]);
+    previousSelection=selected;
     markers.forEach((marker,i)=>{
       const value=values[i], name=places[i][0];
       const key=String(value)+'/'+(selected===i);
