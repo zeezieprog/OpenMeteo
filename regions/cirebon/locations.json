@@ -1,5 +1,44 @@
 [
-  ["Blok Kebonturi","Arjawinangun",-6.65556,108.39972,"https://mapcarta.com/25139028"],
-  ["Stasiun Arjawinangun","Jungjang",-6.64453,108.41457,"https://mapcarta.com/N12001790865"],
-  ["Desa Arjawinangun","Kabupaten Cirebon",-6.6403,108.4069,"https://mapcarta.com/25138708"]
+  [
+    "Blok Kebonturi",
+    "Arjawinangun",
+    -6.65556,
+    108.39972,
+    "https://mapcarta.com/25139028"
+  ],
+  [
+    "Stasiun Arjawinangun",
+    "Jungjang",
+    -6.64453,
+    108.41457,
+    "https://mapcarta.com/N12001790865"
+  ],
+  [
+    "Desa Arjawinangun",
+    "Kabupaten Cirebon",
+    -6.6403,
+    108.4069,
+    "https://mapcarta.com/25138708"
+  ],
+  [
+    "Geyongan",
+    "Desa Geyongan, Arjawinangun",
+    -6.6675,
+    108.4083,
+    "https://blog.stkippgribl.ac.id/Katapedia/wiki/Geyongan%2C_Arjawinangun%2C_Cirebon"
+  ],
+  [
+    "Jungjang",
+    "SD Negeri 2 Jungjang",
+    -6.6454,
+    108.4132,
+    "https://referensi.data.kemendikdasmen.go.id/tabs.php?npsn=20244346"
+  ],
+  [
+    "ITB Cirebon",
+    "Kampus ITB Arjawinangun, Kebonturi",
+    -6.6633191,
+    108.4167039,
+    "https://id.worldorgs.com/katalog/cirebon/universitas/institut-teknologi-bandung-kampus-cirebon"
+  ]
 ]

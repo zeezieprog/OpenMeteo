@@ -23,7 +23,7 @@ for (const link of document.querySelectorAll('[data-region]')) {
 const heading = document.querySelector('h1');
 heading.textContent += ' · '+regionLabel;
 document.title = heading.textContent+' | Rain Tracker Meteo';
-const dataset = name => folder+name+(region==='jatinangor'?'?v=jat7':region==='bandung'?'?v=bdg16':'');
+const dataset = name => folder+name+(region==='jatinangor'?'?v=jat7':region==='bandung'?'?v=bdg16':'?v=crb6');
 const [places,seed,archive,outlookSeed]=await Promise.all([
  read(dataset('locations.json')),read(dataset('snapshot.json')),
  page==='analisis'?read(dataset('history.json')):null,
