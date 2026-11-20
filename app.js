@@ -1,5 +1,5 @@
 import {localReadings} from './readings.js';
-import {rainMap} from './rainmap.js?v=729e7e2';
+import {rainMap} from './rainmap.js?v=regional2';
 import {weather,forecastCards} from './outlook.js';
 const $=id=>document.getElementById(id);
 async function read(url) {
@@ -12,12 +12,25 @@ async function read(url) {
  } finally { clearTimeout(timer); }
 }
 const page=document.body.dataset.page;
+const regions = {bandung:'Bandung', jatinangor:'Jatinangor', cirebon:'Cirebon'};
+const requestedRegion = new URLSearchParams(location.search).get('wilayah');
+const region = Object.hasOwn(regions, requestedRegion) ? requestedRegion : 'bandung';
+const regionLabel = regions[region];
+const folder = region === 'bandung' ? '' : 'regions/'+region+'/';
+for (const link of document.querySelectorAll('[data-region]')) {
+ if (link.dataset.region === region) link.setAttribute('aria-current','true');
+}
+const heading = document.querySelector('h1');
+heading.textContent += ' · '+regionLabel;
+document.title = heading.textContent+' | Bandung Rain Tracker';
 const [places,seed,archive,outlookSeed]=await Promise.all([
- read('locations.json'),read('snapshot.json'),
- page==='analisis'?read('history.json'):null,
- page==='prakiraan'?read('outlook.json'):null
+ read(folder+'locations.json'),read(folder+'snapshot.json'),
+ page==='analisis'?read(folder+'history.json'):null,
+ page==='prakiraan'?read(folder+'outlook.json'):null
 ]);
 const names=places.map(p=>p[0]), number=new Intl.NumberFormat('id-ID',{maximumFractionDigits:1});
+const locationKey = places.map(p=>p.slice(0,4).join('/')).join('|');
+const cacheKey = type => region+'-'+type+'-'+locationKey;
 const fmt=n=>Number.isFinite(n)?number.format(n):'—';
 const dateLabel=(s,options)=>new Date(s.slice(0,10)+'T12:00:00Z').toLocaleDateString('id-ID',{timeZone:'UTC',...options});
 const stamp=s=>dateLabel(s,{day:'numeric',month:'short',year:'numeric'})+' · '+s.slice(11,16)+' WIB';
@@ -50,7 +63,7 @@ async function updateOutlook(){
  if(outlookBusy)return;outlookBusy=true;
  try{const next=await read('https://api.open-meteo.com/v1/forecast?'+new URLSearchParams({...query,hourly:'temperature_2m,precipitation_probability,precipitation,weather_code,wind_speed_10m',daily:'weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum',forecast_days:7}));
  if(!validForecast(next))throw Error();
- outlook=next;try{localStorage.setItem('bandung-forecast-v1',JSON.stringify(next))}catch{}outlookStatus='Open-Meteo';}catch{outlookStatus='Menggunakan prakiraan tersimpan';}finally{outlookBusy=false;showForecast()}
+ outlook=next;try{localStorage.setItem(cacheKey('forecast'),JSON.stringify(next))}catch{}outlookStatus='Open-Meteo';}catch{outlookStatus='Menggunakan prakiraan tersimpan';}finally{outlookBusy=false;showForecast()}
 }
 function updateArrows(){
  const strip=$('forecastcards');if(!strip)return;
@@ -77,8 +90,8 @@ function cached(key,base,valid,date){
  try{const saved=JSON.parse(localStorage.getItem(key));if(valid(saved)&&date(saved)>=date(base))return saved}catch{}
  return base;
 }
-data=cached('bandung-weather-v1',seed,validCurrent,rows=>rows[0].current.time);
-if(outlook)outlook=cached('bandung-forecast-v1',outlook,validForecast,rows=>rows[0].hourly.time.at(-1));
+data=cached(cacheKey('weather'),seed,validCurrent,rows=>rows[0].current.time);
+if(outlook)outlook=cached(cacheKey('forecast'),outlook,validForecast,rows=>rows[0].hourly.time.at(-1));
 function weekly(i){
  const entries=daily(i).slice(-7);
  return entries.length===7?sum(entries.map(entry=>entry[1])):null;
@@ -93,7 +106,7 @@ const requested=new URLSearchParams(location.search).get('lokasi');
 const initial=page==='index'?-1:names.findIndex(n=>slug(n)===requested);
 selected=initial<0?null:initial;
 $('place').value=selected??'';
-const updateMap=page==='peta'?rainMap(places,choose):null;
+const updateMap=page==='peta'?rainMap(places,choose,region):null;
 function choose(i){
  selected=i;$('place').value=i??'';if($('forecastcards'))$('forecastcards').scrollLeft=0;
  if(page!=='index'){
@@ -135,7 +148,7 @@ function render(){
  const currents=data.map(d=>d.current),valid=currents.filter(c=>Number.isFinite(c.precipitation)),wet=names.filter((_,i)=>currents[i].precipitation>0),temps=currents.map(c=>c.temperature_2m).filter(Number.isFinite),high=Math.max(...valid.map(c=>c.precipitation)),c=currents[selected],clock=currents[0],interval=clock.interval/60;
  const peak=high>0?names.filter((_,i)=>currents[i].precipitation===high).join(', '):'';
  if($('stamp'))$('stamp').textContent=status+' · '+stamp(clock.time);
- const metrics=[['Lokasi hujan',wet.length,'/ '+valid.length,'titik dengan data hujan'],['Hujan tertinggi',fmt(high),'mm','dalam '+interval+' menit'],['Rerata suhu',fmt(sum(temps)/temps.length),'°C','di titik pemantauan'],['Titik pantau',places.length,'lokasi','di Kota Bandung']];
+ const metrics=[['Lokasi hujan',wet.length,'/ '+valid.length,'titik dengan data hujan'],['Hujan tertinggi',fmt(high),'mm','dalam '+interval+' menit'],['Rerata suhu',fmt(sum(temps)/temps.length),'°C','di titik pemantauan'],['Titik pantau',places.length,'lokasi','di '+regionLabel]];
  if($('stats'))$('stats').innerHTML=metrics.map(([l,v,u,n],i)=>'<div class="metric">'+icon(i)+'<label>'+l+'</label><strong>'+v+' <em>'+u+'</em></strong><p>'+n+'</p></div>').join('');
  if(updateMap){
    const weekLayer=$('layer').value==='week';
@@ -164,11 +177,16 @@ function render(){
  const description=mixed?'Model mencatat air hujan dalam interval terakhir. Jenis hujannya belum dapat dipastikan.':explanation;
  const expandedReadings=[...$('detail').querySelectorAll('details')].map(item=>item.open);
  $('detail').innerHTML='<div class="reading"><strong>'+condition+'</strong><span>'+description+' '+fmt(c.precipitation)+' mm dalam '+interval+' menit</span></div><div class="reading-list">'+localReadings(c,fmt)+'</div><p class="detailnote">Estimasi model untuk '+names[selected]+'. Satu milimeter hujan setara dengan satu liter air per meter persegi.</p>';
+ const point=places[selected], source=document.createElement('a');
+ source.textContent='Koordinat titik · '+Math.abs(point[2]).toFixed(4)+'° LS, '+point[3].toFixed(4)+'° BT';
+ source.href=point[4] || 'https://www.openstreetmap.org/?mlat='+point[2]+'&mlon='+point[3];
+ source.target='_blank';source.rel='noopener';source.className='point-source';$('detail').append(source);
  $('detail').querySelectorAll('details').forEach((item,i)=>{item.open=Boolean(expandedReadings[i])});
  }else if($('detail')){$('detail').textContent=page==='peta'?'':'Pilih lokasi untuk melihat curah hujan, kelembapan, suhu, dan anginnya.'}
  if($('freshness'))$('freshness').textContent='Cek otomatis setiap menit'+(checkedAt?' · Terakhir diperiksa '+checkedAt+' WIB':'')+'. Estimasi model memiliki interval '+interval+' menit.';
  for(const link of document.querySelectorAll('nav a,.destinations a')){
   const url=new URL(link.href);
+  url.searchParams.set('wilayah',region);
   if(selected!==null&&!url.pathname.endsWith('index.html'))url.searchParams.set('lokasi',slug(names[selected]));else url.searchParams.delete('lokasi');
   link.href=url.href;
  }
@@ -186,7 +204,7 @@ function render(){
  if($('rows'))$('rows').innerHTML=currents.map((v,i)=>'<tr><td><b>'+names[i]+'</b></td><td>'+(v.precipitation>0&&[0,1,2,3,45,48].includes(v.weather_code)?'Hujan terindikasi':weather(v.weather_code)[0])+'</td><td>'+fmt(v.precipitation)+' mm</td><td>'+fmt(v.temperature_2m)+' °C</td><td>'+fmt(weekly(i))+' mm</td></tr>').join('');
  chart();showForecast()
 }
-async function refresh(){if(busy)return;busy=true;if($('refresh'))$('refresh').disabled=true;try{const next=await read('https://api.open-meteo.com/v1/forecast?'+new URLSearchParams({...query,current:'precipitation,temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code',past_days:31,forecast_days:1}));if(!validCurrent(next))throw Error();if(next[0].current.time<data[0].current.time)throw Error('older');data=next;status='Waktu data';try{localStorage.setItem('bandung-weather-v1',JSON.stringify(data))}catch{}}catch{status='Koneksi gagal · salinan'}finally{checkedAt=wibNow().slice(11);busy=false;if($('refresh'))$('refresh').disabled=false;render()}}
+async function refresh(){if(busy)return;busy=true;if($('refresh'))$('refresh').disabled=true;try{const next=await read('https://api.open-meteo.com/v1/forecast?'+new URLSearchParams({...query,current:'precipitation,temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code',past_days:31,forecast_days:1}));if(!validCurrent(next))throw Error();if(next[0].current.time<data[0].current.time)throw Error('older');data=next;status='Waktu data';try{localStorage.setItem(cacheKey('weather'),JSON.stringify(data))}catch{}}catch{status='Koneksi gagal · salinan'}finally{checkedAt=wibNow().slice(11);busy=false;if($('refresh'))$('refresh').disabled=false;render()}}
 async function refreshHistory(){const date=new Date(Date.now()+7*3600000),y=date.getUTCFullYear(),m=date.getUTCMonth(),iso=d=>d.toISOString().slice(0,10),end=iso(new Date(Date.UTC(y,m,0)));if(historyBusy||loadedMonth===end)return;historyBusy=true;chart();try{const next=await read('https://archive-api.open-meteo.com/v1/archive?'+new URLSearchParams({...query,start_date:iso(new Date(Date.UTC(y,m-6,1))),end_date:end}));if(next.length===places.length&&next.every(d=>completeSeries(d.daily,['precipitation_sum']))){history=next;loadedMonth=end;historyStatus='Arsip Open-Meteo'}}catch{historyStatus='Koneksi gagal · salinan arsip'}finally{historyBusy=false;chart()}}
 if($('day')){
  $('day').onclick=()=>{mode='day';chart()};

@@ -62,3 +62,12 @@ body[data-page="peta"] #layer{width:auto;max-width:100%;margin:0}
 .map-stage .leaflet-control-attribution{font-size:11px}
 @media(max-width:800px){body[data-page="peta"] .weather-layout{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:640px){body[data-page="peta"] .route-hero>div{padding:18px}body[data-page="peta"] .weather-layout>article:first-child>.locator{flex-wrap:wrap;gap:5px}body[data-page="peta"] #layer{flex:1;min-width:140px}.map-stage #rainmap{height:clamp(300px,49svh,450px)}body[data-page="peta"] .wrap>.tools{margin:4px 0 9px}}
+
+.region-bar{display:flex;align-items:center;gap:16px;margin:20px 0 12px;color:#28474c;font-size:0.93rem;font-weight:650}
+.region-bar>div{display:flex;gap:4px;padding:4px;background:#e4edeb;border-radius:14px}
+.region-bar a{display:grid;place-items:center;padding:9px 16px;border-radius:10px;text-decoration:none;color:#28474c}
+.region-bar a[aria-current=true]{color:white;background:#145d55}
+.region-bar a:hover,.region-bar a:focus-visible{outline:2px solid #297a70;outline-offset:0}
+.point-source{display:inline-block;margin:4px 0;color:#175f66;font-size:.875rem}
+.map-stage #rainmap{background:#e5eceb}
+@media(max-width:600px){.region-bar{display:block;margin:14px 0 8px}.region-bar>span{display:block;margin-bottom:5px}.region-bar a{flex:1;padding:10px 5px}.region-bar>div{width:100%}}
