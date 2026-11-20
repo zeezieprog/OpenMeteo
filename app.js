@@ -22,7 +22,7 @@ for (const link of document.querySelectorAll('[data-region]')) {
 }
 const heading = document.querySelector('h1');
 heading.textContent += ' · '+regionLabel;
-document.title = heading.textContent+' | Bandung Rain Tracker';
+document.title = heading.textContent+' | Rain Tracker Meteo';
 const dataset = name => folder+name+(region==='jatinangor'?'?v=jat8':region==='bandung'?'?v=bdg11':'');
 const [places,seed,archive,outlookSeed]=await Promise.all([
  read(dataset('locations.json')),read(dataset('snapshot.json')),
