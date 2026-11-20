@@ -62,10 +62,24 @@
     "https://maps.app.goo.gl/R3n8GP1D6VCH6p9q8"
   ],
   [
-    "Trans Studio Mall (TSM)",
-    "Trans Studio Mall Bandung",
-    -6.925542,
-    107.6366676,
-    "https://maps.app.goo.gl/fu5jMJVP9Jpthj1L8"
+    "Cibiru",
+    "Titik acuan Kecamatan Cibiru, Kota Bandung (BPS)",
+    -6.93,
+    107.72,
+    "https://bandungkota.bps.go.id/id/statistics-table/2/NTcjMg%3D%3D/koordinat-dan-"
+  ],
+  [
+    "Soekarno-Hatta",
+    "SMKN 7 Bandung",
+    -6.9405,
+    107.6602,
+    "https://referensi.data.kemendikdasmen.go.id/pendidikan/npsn/20219141"
+  ],
+  [
+    "Cikutra",
+    "SMAN 10 Bandung, Jl. Cikutra No. 77",
+    -6.9024,
+    107.6434,
+    "https://referensi.data.kemendikdasmen.go.id/tabs.php?npsn=20219257"
   ]
 ]
