@@ -23,7 +23,7 @@ for (const link of document.querySelectorAll('[data-region]')) {
 const heading = document.querySelector('h1');
 heading.textContent += ' · '+regionLabel;
 document.title = heading.textContent+' | Bandung Rain Tracker';
-const dataset = name => folder+name+(region==='jatinangor'?'?v=jat8':'');
+const dataset = name => folder+name+(region==='jatinangor'?'?v=jat8':region==='bandung'?'?v=bdg11':'');
 const [places,seed,archive,outlookSeed]=await Promise.all([
  read(dataset('locations.json')),read(dataset('snapshot.json')),
  page==='analisis'?read(dataset('history.json')):null,
@@ -179,7 +179,7 @@ function render(){
  const expandedReadings=[...$('detail').querySelectorAll('details')].map(item=>item.open);
  $('detail').innerHTML='<div class="reading"><strong>'+condition+'</strong><span>'+description+' '+fmt(c.precipitation)+' mm dalam '+interval+' menit</span></div><div class="reading-list">'+localReadings(c,fmt)+'</div><p class="detailnote">Estimasi model untuk '+names[selected]+'. Satu milimeter hujan setara dengan satu liter air per meter persegi.</p>';
  const point=places[selected], source=document.createElement('a');
- source.textContent=(region==='jatinangor'?point[1]+' · ':'Koordinat titik · ')+Math.abs(point[2]).toFixed(4)+'° LS, '+point[3].toFixed(4)+'° BT';
+ source.textContent=((region==='jatinangor'||point[4])?point[1]+' · ':'Koordinat titik · ')+Math.abs(point[2]).toFixed(4)+'° LS, '+point[3].toFixed(4)+'° BT';
  source.href=point[4] || 'https://www.openstreetmap.org/?mlat='+point[2]+'&mlon='+point[3];
  source.target='_blank';source.rel='noopener';source.className='point-source';$('detail').append(source);
  $('detail').querySelectorAll('details').forEach((item,i)=>{item.open=Boolean(expandedReadings[i])});
