@@ -23,10 +23,11 @@ for (const link of document.querySelectorAll('[data-region]')) {
 const heading = document.querySelector('h1');
 heading.textContent += ' · '+regionLabel;
 document.title = heading.textContent+' | Bandung Rain Tracker';
+const dataset = name => folder+name+(region==='jatinangor'?'?v=jat6':'');
 const [places,seed,archive,outlookSeed]=await Promise.all([
- read(folder+'locations.json'),read(folder+'snapshot.json'),
- page==='analisis'?read(folder+'history.json'):null,
- page==='prakiraan'?read(folder+'outlook.json'):null
+ read(dataset('locations.json')),read(dataset('snapshot.json')),
+ page==='analisis'?read(dataset('history.json')):null,
+ page==='prakiraan'?read(dataset('outlook.json')):null
 ]);
 const names=places.map(p=>p[0]), number=new Intl.NumberFormat('id-ID',{maximumFractionDigits:1});
 const locationKey = places.map(p=>p.slice(0,4).join('/')).join('|');
@@ -178,7 +179,7 @@ function render(){
  const expandedReadings=[...$('detail').querySelectorAll('details')].map(item=>item.open);
  $('detail').innerHTML='<div class="reading"><strong>'+condition+'</strong><span>'+description+' '+fmt(c.precipitation)+' mm dalam '+interval+' menit</span></div><div class="reading-list">'+localReadings(c,fmt)+'</div><p class="detailnote">Estimasi model untuk '+names[selected]+'. Satu milimeter hujan setara dengan satu liter air per meter persegi.</p>';
  const point=places[selected], source=document.createElement('a');
- source.textContent='Koordinat titik · '+Math.abs(point[2]).toFixed(4)+'° LS, '+point[3].toFixed(4)+'° BT';
+ source.textContent=(region==='jatinangor'?point[1]+' · ':'Koordinat titik · ')+Math.abs(point[2]).toFixed(4)+'° LS, '+point[3].toFixed(4)+'° BT';
  source.href=point[4] || 'https://www.openstreetmap.org/?mlat='+point[2]+'&mlon='+point[3];
  source.target='_blank';source.rel='noopener';source.className='point-source';$('detail').append(source);
  $('detail').querySelectorAll('details').forEach((item,i)=>{item.open=Boolean(expandedReadings[i])});

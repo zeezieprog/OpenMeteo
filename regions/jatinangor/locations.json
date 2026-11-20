@@ -1,5 +1,44 @@
 [
-  ["Fisika Unpad","Kampus Unpad Jatinangor",-6.927426,107.773643,"https://phys.unpad.ac.id/rute-dan-peta/"],
-  ["Jatinangor Town Square","Cikeruh",-6.93486,107.77194,"https://indonesia.worldplaces.me/review/91657810-jatinangor-town-square.html"],
-  ["Sayang RW 01","Desa Sayang",-6.953387,107.769692,"https://jdih.jabarprov.go.id/page/eksekusi_download/32.11/JDIHSMD-1627298381.pdf"]
+  [
+    "ITB Jatinangor",
+    "Kampus ITB Jatinangor",
+    -6.92809,
+    107.77045,
+    "https://p2k.stekom.ac.id/ensiklopedia/Kampus_ITB_Jatinangor"
+  ],
+  [
+    "Unpad Jatinangor",
+    "Gedung Fisika Unpad",
+    -6.927426,
+    107.773643,
+    "https://phys.unpad.ac.id/rute-dan-peta/"
+  ],
+  [
+    "Jatinangor Town Square",
+    "Cikeruh",
+    -6.93486,
+    107.77194,
+    "https://indonesia.worldplaces.me/review/91657810-jatinangor-town-square.html"
+  ],
+  [
+    "Jl. Sayang",
+    "SD Negeri Sayang, Jl. Kol. Achmad Syam No. 227",
+    -6.9484,
+    107.7724,
+    "https://referensi.data.kemendikdasmen.go.id/pendidikan/npsn/20233977"
+  ],
+  [
+    "Jl. Caringin",
+    "SDIT Imam Bukhari, Jl. Caringin Km 20,5",
+    -6.9415,
+    107.7707,
+    "https://referensi.data.kemendikdasmen.go.id/pendidikan/npsn/20234004"
+  ],
+  [
+    "Cibiru",
+    "Titik acuan Kecamatan Cibiru, Kota Bandung (BPS)",
+    -6.93,
+    107.72,
+    "https://bandungkota.bps.go.id/id/statistics-table/2/NTcjMg%3D%3D/koordinat-dan-"
+  ]
 ]
